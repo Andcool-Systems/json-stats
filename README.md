@@ -7,6 +7,8 @@
 GITHUB="<github_token>"
 GITHUB_USERNAME="<github_username>"
 
+DESCRIPTION="Your description"
+
 WAKATIME_GLOBAL="/@AndcoolSystems/c20041f4-a965-47c3-ac36-7234e622a980.json" // WakaTime Global stats
 WAKATIME_LANGS="/@AndcoolSystems/eaa20c39-4e68-49d3-8760-93e93fbf1ff5.json" // WakaTime Langs stats
 

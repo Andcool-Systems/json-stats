@@ -100,6 +100,7 @@ export class WidgetService {
 
             json = {
                 name: github_data.data.user?.name ?? 'n/a',
+                description: process.env.DESCRIPTION,
                 followers: github_data.data.user?.followers?.totalCount ?? 'n/a',
                 total_stars: github_data.data.user?.repositories?.totalCount ?? 'n/a',
                 top_repos: top_repos ?? 'n/a',
