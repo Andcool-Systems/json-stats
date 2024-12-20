@@ -112,9 +112,10 @@ export class WidgetService {
                 created_by: "AndcoolSystems"
             }
         } catch (e) {
+            console.error(e)
             json = {
                 status: 'error',
-                message: e.message ?? "Unknown error. See server console."
+                message: (e.message ?? "Unknown error. See server console.").slice(0, 60) + '...'
             }
         }
         return this.parserService.parse(json, 30);
