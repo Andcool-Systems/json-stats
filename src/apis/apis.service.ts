@@ -170,7 +170,7 @@ export class APIService {
             return null;
         }
 
-        await this.cacheManager.set(`activity:${id}`, JSON.stringify(response.data), 1000 * 60 * 30);
+        await this.cacheManager.set(`activity:${id}`, JSON.stringify(response.data), 1000 * 60);
         return response.data;
     }
 }

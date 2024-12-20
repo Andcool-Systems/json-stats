@@ -126,12 +126,13 @@ export class WidgetService {
                     file: activity.activities[0].file ?? 'Idling',
                     workplace: activity.activities[0].workplace ?? 'No workplace',
                     duration: this.getTimeDiff(new Date(activity.activities[0].start_time))
-                } : undefined
+                } : undefined,
+                created_by: "AndcoolSystems"
             }
         } catch (e) {
             json = {
                 status: 'error',
-                message: e
+                message: e.message ?? "Unknown error. See server console."
             }
         }
         return this.parserService.parse(json, 30);
