@@ -28,23 +28,6 @@ export class WidgetService {
         });
     }
 
-    toIsoString(date: Date) {
-        const tzo = -new Date(new Date().toLocaleString("en-US", { timeZone: process.env.DATETIME_TIMEZONE })).getTimezoneOffset();
-        const dif = tzo >= 0 ? '+' : '-';
-        const pad = (num: number) => {
-            return (num < 10 ? '0' : '') + num;
-        };
-
-        return date.getFullYear() +
-            '-' + pad(date.getMonth() + 1) +
-            '-' + pad(date.getDate()) +
-            'T' + pad(date.getHours()) +
-            ':' + pad(date.getMinutes()) +
-            ':' + pad(date.getSeconds()) +
-            dif + pad(Math.floor(Math.abs(tzo) / 60)) +
-            ':' + pad(Math.abs(tzo) % 60);
-    }
-
     generate_indexes(count: number) {
         const array = [];
         for (let index = 1; index <= count; index++) {
@@ -120,7 +103,6 @@ export class WidgetService {
                     time: this.getTime(),
                     tz: process.env.DATETIME_TIMEZONE,
                     date: this.getDate(),
-                    iso: this.toIsoString(new Date())
                 },
                 activity: activity && activity.activities.length !== 0 ? {
                     file: activity.activities[0].file ?? 'Idling',
