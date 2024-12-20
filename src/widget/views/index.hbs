@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="{{ height }}" viewBox="0 0 800 {{ height }}">
+    <style>
+        .bracket {
+            fill: red;
+        }
+
+        .key {
+            fill: #9cdcfe;
+        }
+
+        text {
+            fill: white;
+            font-weight: normal;
+            transform: translateX(5px);
+        }
+
+        .filename {
+            transform: translateX(10px);
+        }
+
+        .indexes {
+            fill: #6e7681;
+            transform: translateX(10px);
+        }
+
+        .main_text {
+            transform: translateX(50px);
+        }
+    </style>
+    <rect width="800" height="{{ height_ }}" style="fill: #1e1e1e;" />
+    <rect width="685" height="40" x="115" style="fill: #252526;" />
+    <rect width="1" height="{{ height }}" x="40" y="40" style="fill: #404040;" />
+
+    <text y="60" font-family="Consolas, monospace" class="indexes">
+        {{{indexes}}}
+    </text>
+    <text y="25" class="filename" font-family="Segoe WPC, Segoe UI, sans-serif">
+        <tspan style="fill: #ffd700;" font-family="Consolas, monospace">{}</tspan> stats.json
+    </text>
+    <text y="60" font-family="Consolas, monospace" class="main_text">
+        {{{json}}}
+    </text>
+</svg>

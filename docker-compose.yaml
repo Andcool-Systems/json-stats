@@ -1,0 +1,15 @@
+services:
+    json_stats:
+        container_name: json_stats
+        build:
+            context: .
+            dockerfile: Dockerfile
+        networks:
+            - nginx
+        restart: unless-stopped
+        command: npm run start
+
+networks:
+    nginx:
+        external: true
+        name: nginx
