@@ -19,7 +19,6 @@ export class ParserService {
             return `<tspan style="fill: ${color};">${quotes}${obj}${quotes}</tspan>`;
         }
 
-        // Форматирование объекта
         const entries = Object.entries(obj)
             .map(([key, value], index, array) => {
                 const formattedValue = this.parse(value, indent, depth + 1);

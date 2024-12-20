@@ -115,9 +115,13 @@ export class WidgetService {
             console.error(e)
             json = {
                 status: 'error',
-                message: (e.message ?? "Unknown error. See server console.").slice(0, 60) + '...'
+                message: (e.message ?? "Unknown error. See server console.").slice(0, 60) + (!!e.message && e.message.length > 60 ? '...' : '')
             }
         }
         return this.parserService.parse(json, 30);
+    }
+
+    async generateUser(obj: any) {
+        return this.parserService.parse(obj, 30);
     }
 }
