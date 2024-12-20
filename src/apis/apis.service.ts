@@ -31,7 +31,7 @@ export class APIService {
 
         if (response.status !== 200) return null;
 
-        await this.cacheManager.set(`repos:${username}`, JSON.stringify(response.data), 1000 * 60 * 60 * 12);
+        await this.cacheManager.set(`repos:${username}`, JSON.stringify(response.data), 1000 * 60 * 60);
         return response.data;
     }
 
@@ -102,7 +102,7 @@ export class APIService {
             longest: longest_streak
         }
 
-        await this.cacheManager.set(`streak:${username}`, JSON.stringify(result), 1000 * 60 * 60 * 12);
+        await this.cacheManager.set(`streak:${username}`, JSON.stringify(result), 1000 * 60 * 60);
         return result;
     }
 
@@ -119,7 +119,7 @@ export class APIService {
             return null;
         }
 
-        await this.cacheManager.set(`waka_global:${path}`, JSON.stringify(response.data), 1000 * 60 * 60 * 12);
+        await this.cacheManager.set(`waka_global:${path}`, JSON.stringify(response.data), 1000 * 60 * 60);
         return response.data;
     }
 
@@ -136,7 +136,7 @@ export class APIService {
             return null;
         }
 
-        await this.cacheManager.set(`waka_langs:${path}`, JSON.stringify(response.data), 1000 * 60 * 60 * 12);
+        await this.cacheManager.set(`waka_langs:${path}`, JSON.stringify(response.data), 1000 * 60 * 60);
         return response.data;
     }
 
