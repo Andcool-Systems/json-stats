@@ -31,7 +31,7 @@ export class WidgetService {
     generate_indexes(count: number) {
         const array = [];
         for (let index = 1; index <= count; index++) {
-            array.push(`<tspan x="${index < 10 ? '10' : '0'}" dy="${index === 1 ? '0' : '19'}">${index}</tspan>`);
+            array.push(`<tspan x="${index < 10 ? '9' : '0'}" dy="${index === 1 ? '0' : '19'}">${index}</tspan>`);
         }
 
         return array.join('\n');
