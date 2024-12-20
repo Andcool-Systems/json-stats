@@ -3,7 +3,7 @@ name: Deploy to Server
 on:
     push:
         branches:
-            - main
+            - master
         paths-ignore:
             - 'README.md'
             - 'docs/**'
