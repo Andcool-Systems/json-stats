@@ -1,14 +1,15 @@
 import { ConfigType, TypeofTypes } from 'src/config.types';
 
 const config: ConfigType = {
+    indent: 4,  // Number of spaces
     colors: {
-        main_text: '#ffffff',
-        background: '#1e1e1e',
-        header: '#252526',
-        icon_color: '#ffd700',
-        indent_lines: '#404040',
-        line_index: '#6e7681',
-        keys: '#9cdcfe'
+        main_text: '#ffffff',  // Comma, colon color
+        background: '#1e1e1e',  // Main background color
+        header: '#252526',  // Color of header
+        icon_color: '#ffd700',  // Color of `{}` icon in filename
+        indent_lines: '#404040',  // Color of indent lines
+        line_index: '#6e7681',  // Color of indexes of lines
+        keys: '#9cdcfe'  // Color of JSON keys
     },
     /**
     * Get the color associated with a JavaScript data type.

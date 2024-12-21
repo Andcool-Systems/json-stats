@@ -19,7 +19,7 @@ export class WidgetController {
         @Res({ passthrough: true }) res: Response
     ) {
         const json = await this.widgetService.generate();
-        const content = this.parserService.parse(json, 30);
+        const content = this.parserService.parse(json, config.indent * 7.5);
 
         const indents = this.parserService.parseObjectStructure(json);
 
@@ -30,10 +30,11 @@ export class WidgetController {
         return {
             json: content,
             indexes: indexes,
-            indents: this.widgetService.generateIndentLines(indents, 30),
+            indents: this.widgetService.generateIndentLines(indents, config.indent * 7.5),
             height: 52 + (lines_count * 19),
             height_: 60 + (lines_count * 19),
             height_main_line: (lines_count - 2) * 19,
+            indent_x: 40 + config.indent * 7.5,
 
             background_color: config.colors.background,
             header_color: config.colors.header,

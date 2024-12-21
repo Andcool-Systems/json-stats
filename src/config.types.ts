@@ -1,6 +1,7 @@
 export type TypeofTypes = 'string' | 'boolean' | 'function' | 'number' | 'object' | 'symbol' | 'undefined' | 'bigint';
 
 export type ConfigType = {
+    indent: number,
     colors: {
         main_text: string,
         background: string,
