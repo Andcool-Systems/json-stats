@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { APIService } from 'src/apis/apis.service';
-import { colors } from 'src/config';
+import config from 'src/config';
 import { ObjectStructureInfo } from 'src/json_parser/parser.service';
 
 
@@ -116,7 +116,7 @@ export class WidgetService {
     generate_indexes(count: number) {
         const array = [];
         for (let index = 1; index <= count; index++) {
-            array.push(`<tspan x="${index < 10 ? '9' : '0'}" dy="${index === 1 ? '0' : '19'}" fill="${colors.line_index}">${index}</tspan>`);
+            array.push(`<tspan x="${index < 10 ? '9' : '0'}" dy="${index === 1 ? '0' : '19'}" fill="${config.colors.line_index}">${index}</tspan>`);
         }
 
         return array.join('\n');
@@ -126,7 +126,7 @@ export class WidgetService {
         const array = [];
         for (const indent of indents) {
             array.push(
-                `<rect fill="${colors.indent_lines}" x="${indent.depth * indent_width}" ` +
+                `<rect fill="${config.colors.indent_lines}" x="${indent.depth * indent_width}" ` +
                 `y="${indent.startLine * 19}" width="1" height="${((indent.endLine - indent.startLine) - 1) * 19}" />`
             );
         }

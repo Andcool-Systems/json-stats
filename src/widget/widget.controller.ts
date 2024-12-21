@@ -2,7 +2,7 @@ import { Get, Controller, Render, Header, Res, Query } from '@nestjs/common';
 import type { Response } from 'express';
 import { WidgetService } from './widget.service';
 import { ParserService } from 'src/json_parser/parser.service';
-import { colors } from 'src/config';
+import config from 'src/config';
 
 
 @Controller()
@@ -35,11 +35,11 @@ export class WidgetController {
             height_: 60 + (lines_count * 19),
             height_main_line: (lines_count - 2) * 19,
 
-            background_color: colors.background,
-            header_color: colors.header,
-            icon_color: colors.icon_color,
-            indent_color: colors.indent_lines,
-            main_color: colors.main_text
+            background_color: config.colors.background,
+            header_color: config.colors.header,
+            icon_color: config.colors.icon_color,
+            indent_color: config.colors.indent_lines,
+            main_color: config.colors.main_text
         };
     }
 }

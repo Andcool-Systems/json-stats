@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { brackets_colors, colors, typeColors, typeQuotes } from 'src/config';
+import config from 'src/config';
 
 type AnyObject = Record<string, any>;
 
@@ -21,8 +21,8 @@ export class ParserService {
         const nextIndent = indent * (depth + 1);
 
         if (typeof obj !== "object" || obj === null || obj === undefined) {
-            const quotes = typeQuotes(typeof obj);
-            const color = typeColors(typeof obj);
+            const quotes = config.typeQuotes(typeof obj);
+            const color = config.typeColor(typeof obj);
             return `<tspan style="fill: ${color};">${quotes}${obj}${quotes}</tspan>`;
         }
 
@@ -32,16 +32,12 @@ export class ParserService {
                 const comma = index < array.length - 1 ? ',' : '';
 
                 return `<tspan x="${nextIndent}" dy="19">` +
-                    `<tspan style="fill: ${colors.keys};">"${key}"</tspan>: ${formattedValue}${comma}` +
+                    `<tspan style="fill: ${config.colors.keys};">"${key}"</tspan>: ${formattedValue}${comma}` +
                     `</tspan>`;
             })
             .join(`\n`);
 
-        const bracket_color = brackets_colors[
-            depth < brackets_colors.length ?
-                depth :
-                depth - (Math.floor(depth / brackets_colors.length) * brackets_colors.length)
-        ];
+        const bracket_color = config.bracketsColors(depth);
 
         if (currentIndent === 0) {
             return (
