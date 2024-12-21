@@ -24,6 +24,7 @@ const config: ConfigType = {
             case 'object': return '#569cd6';
             case 'undefined': return '#569cd6';
             case 'boolean': return '#569cd6';
+            case 'function': return '#dcdcaa';
             default: return '#ce9178';
         }
     },

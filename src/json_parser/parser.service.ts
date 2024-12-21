@@ -23,7 +23,8 @@ export class ParserService {
         if (typeof obj !== "object" || obj === null || obj === undefined) {
             const quotes = config.typeQuotes(typeof obj);
             const color = config.typeColor(typeof obj);
-            return `<tspan style="fill: ${color};">${quotes}${obj}${quotes}</tspan>`;
+            const value = typeof obj !== 'function' ? obj : '&lt;function&gt;';
+            return `<tspan style="fill: ${color};">${quotes}${value}${quotes}</tspan>`;
         }
 
         const entries = Object.entries(obj)
@@ -31,9 +32,11 @@ export class ParserService {
                 const formattedValue = this.parse(value, indent, depth + 1);
                 const comma = index < array.length - 1 ? ',' : '';
 
-                return `<tspan x="${nextIndent}" dy="19">` +
+                return (
+                    `<tspan x="${nextIndent}" dy="19">` +
                     `<tspan style="fill: ${config.colors.keys};">"${key}"</tspan>: ${formattedValue}${comma}` +
-                    `</tspan>`;
+                    `</tspan>`
+                );
             })
             .join(`\n`);
 
@@ -59,25 +62,21 @@ export class ParserService {
         lineIndex: { current: number } = { current: 2 },
         depth: number = 0
     ): ObjectStructureInfo[] {
-        if (typeof obj !== 'object' || obj === null) {
-            return [];
-        }
+        if (typeof obj !== 'object' || obj === null) return [];
 
         const result: ObjectStructureInfo[] = [];
-        const keys = Object.keys(obj);
 
-        for (const key of keys) {
-            const startLine = lineIndex.current++;
+        Object.entries(obj)
+            .forEach(([key, value]) => {
+                const startLine = lineIndex.current++;
 
-            if (typeof obj[key] === 'object' && obj[key] !== null) {
-                result.push({ key, startLine, endLine: 0, depth });
-                const children = this.parseObjectStructure(obj[key], lineIndex, depth + 1);
-                result.push(...children);
-                const endLine = lineIndex.current++;
-                result.find(item => item.key === key && item.startLine === startLine)!.endLine = endLine;
-            }
-        }
-
+                if (typeof value === 'object' && value !== null) {
+                    result.push({ key, startLine, endLine: 0, depth });
+                    result.push(...this.parseObjectStructure(value, lineIndex, depth + 1));
+                    const endLinde = lineIndex.current++;
+                    result.find(item => item.key === key && item.startLine === startLine)!.endLine = endLinde;
+                }
+            });
         return result;
     }
 }
