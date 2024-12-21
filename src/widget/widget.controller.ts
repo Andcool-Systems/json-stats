@@ -16,15 +16,17 @@ export class WidgetController {
     ) {
         const content = await this.widgetService.generate();
 
-        const lines_count = content.split('\n').length;
+        const lines_count = content.main.split('\n').length;
         const indexes = this.widgetService.generate_indexes(lines_count);
 
         res.header('Content-Type', 'image/svg+xml');
         return {
-            json: content,
+            json: content.main,
             indexes: indexes,
+            indents: content.indents,
             height: 52 + (lines_count * 19),
-            height_: 60 + (lines_count * 19)
+            height_: 60 + (lines_count * 19),
+            height_main_line: (lines_count - 2) * 19
         };
     }
 

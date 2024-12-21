@@ -3,6 +3,13 @@ import { Injectable } from '@nestjs/common';
 type AnyObject = Record<string, any>;
 const brackets_colors = ['#ffd700', '#da70d6', '#179fff'];
 
+export type ObjectStructureInfo = {
+    key: string;
+    startLine: number;
+    endLine: number;
+    depth: number;
+};
+
 @Injectable()
 export class ParserService {
     parse(
@@ -33,6 +40,7 @@ export class ParserService {
                 depth :
                 depth - (Math.floor(depth / brackets_colors.length) * brackets_colors.length)
         ];
+
         if (currentIndent === 0) {
             return (
                 `<tspan x="0" dy="0" style="fill: ${bracket_color};">{</tspan>\n` +
@@ -46,5 +54,32 @@ export class ParserService {
             `${entries}\n` +
             `<tspan x="${currentIndent}" dy="19"><tspan style="fill: ${bracket_color};">}</tspan>`
         );
+    }
+
+    analyzeObjectStructureFlat(
+        obj: any,
+        lineIndex: { current: number } = { current: 2 },
+        depth: number = 0
+    ): ObjectStructureInfo[] {
+        if (typeof obj !== 'object' || obj === null) {
+            return [];
+        }
+
+        const result: ObjectStructureInfo[] = [];
+        const keys = Object.keys(obj);
+
+        for (const key of keys) {
+            const startLine = lineIndex.current++;
+
+            if (typeof obj[key] === 'object' && obj[key] !== null) {
+                result.push({ key, startLine, endLine: 0, depth });
+                const children = this.analyzeObjectStructureFlat(obj[key], lineIndex, depth + 1);
+                result.push(...children);
+                const endLine = lineIndex.current++;
+                result.find(item => item.key === key && item.startLine === startLine)!.endLine = endLine;
+            }
+        }
+
+        return result;
     }
 }

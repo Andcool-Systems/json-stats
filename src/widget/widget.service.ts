@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { APIService } from 'src/apis/apis.service';
-import { ParserService } from 'src/json_parser/parser.service';
+import { ObjectStructureInfo, ParserService } from 'src/json_parser/parser.service';
 
 
 @Injectable()
@@ -26,15 +26,6 @@ export class WidgetService {
             year: 'numeric',
             timeZone: process.env.DATETIME_TIMEZONE
         });
-    }
-
-    generate_indexes(count: number) {
-        const array = [];
-        for (let index = 1; index <= count; index++) {
-            array.push(`<tspan x="${index < 10 ? '9' : '0'}" dy="${index === 1 ? '0' : '19'}">${index}</tspan>`);
-        }
-
-        return array.join('\n');
     }
 
     getTimeDiff(start: Date) {
@@ -118,10 +109,36 @@ export class WidgetService {
                 message: (e.message ?? "Unknown error. See server console.").slice(0, 60) + (!!e.message && e.message.length > 60 ? '...' : '')
             }
         }
-        return this.parserService.parse(json, 30);
+
+        const indents = this.parserService.analyzeObjectStructureFlat(json);
+        return {
+            main: this.parserService.parse(json, 30),
+            indents: this.generateIndentLines(indents, 30)
+        };
     }
 
     async generateUser(obj: any) {
         return this.parserService.parse(obj, 30);
+    }
+
+    generate_indexes(count: number) {
+        const array = [];
+        for (let index = 1; index <= count; index++) {
+            array.push(`<tspan x="${index < 10 ? '9' : '0'}" dy="${index === 1 ? '0' : '19'}">${index}</tspan>`);
+        }
+
+        return array.join('\n');
+    }
+
+    generateIndentLines(indents: ObjectStructureInfo[], indent_width: number) {
+        const array = [];
+        for (const indent of indents) {
+            array.push(
+                `<rect fill="#404040" x="${indent.depth * indent_width}" ` +
+                `y="${indent.startLine * 19}" width="1" height="${((indent.endLine - indent.startLine) - 1) * 19}" />`
+            );
+        }
+
+        return array.join('\n');
     }
 }
