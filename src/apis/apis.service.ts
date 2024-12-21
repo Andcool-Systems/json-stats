@@ -17,8 +17,8 @@ export class APIService {
             'https://api.github.com/graphql',
             {
                 query: "query GetUserDetails($username: String!) { user(login: $username)" +
-                    "{ name login followers { totalCount } repositories(first: 3, orderBy: {field: STARGAZERS, direction: DESC})" +
-                    "{ nodes { name stargazerCount } totalCount } } } }",
+                    "{ name login followers { totalCount } repositories(first: 100, orderBy: {field: STARGAZERS, direction: DESC})" +
+                    "{ nodes { name stargazerCount } } } } }",
                 variables: {
                     username: username
                 }
@@ -31,8 +31,11 @@ export class APIService {
 
         if (response.status !== 200) return null;
 
-        await this.cacheManager.set(`repos:${username}`, JSON.stringify(response.data), 1000 * 60 * 60);
-        return response.data;
+        const data: GithubRepos = response.data;
+        data.total_stars = data?.data?.user?.repositories?.nodes?.reduce((acc, node) => acc + node.stargazerCount, 0);
+
+        await this.cacheManager.set(`repos:${username}`, JSON.stringify(data), 1000 * 60 * 60);
+        return data;
     }
 
 

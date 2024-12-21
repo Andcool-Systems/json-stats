@@ -61,7 +61,7 @@ export class WidgetService {
                 this.apiService.getActivity(process.env.ACTIVITY_API, process.env.ACTIVITY_ID)
             ]);
 
-            const top_repos = github_data.data.user?.repositories?.nodes?.reduce((acc, value) => {
+            const top_repos = github_data.data.user?.repositories?.nodes?.slice(0, 3)?.reduce((acc, value) => {
                 const el = { [value.name]: value.stargazerCount };
                 acc = { ...acc, ...el };
                 return acc;
@@ -78,7 +78,7 @@ export class WidgetService {
                 description: process.env.DESCRIPTION,
                 github: {
                     followers: github_data.data.user?.followers?.totalCount ?? null,
-                    total_stars: github_data.data.user?.repositories?.totalCount ?? null,
+                    total_stars: github_data?.total_stars ?? null,
                     top_repos: top_repos ?? null,
                     streak: streak ? {
                         current: streak.streak,

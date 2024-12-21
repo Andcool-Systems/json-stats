@@ -11,11 +11,11 @@ interface GithubRepos {
                     name: string,
                     stargazerCount: number
 
-                }[],
-                totalCount: number
+                }[]
             }
         }
-    }
+    },
+    total_stars: number
 }
 
 interface GithubStreak {
