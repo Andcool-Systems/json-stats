@@ -86,8 +86,8 @@ export class WidgetService {
                     } : null,
                 },
                 wakatime: {
-                    all_time: wakatime_global?.data?.grand_total?.human_readable_total_including_other_language,
-                    top_langs: top_langs
+                    all_time: wakatime_global?.data?.grand_total?.human_readable_total_including_other_language ?? null,
+                    top_langs: top_langs ?? null
                 },
                 weather: weather ? {
                     temperature: weather.temp,
