@@ -24,15 +24,15 @@ ACTIVITY_ID="t9mdtk" // ID of activity
 DATETIME_TIMEZONE="Etc/GMT-3" // Yours timezone
 ```
 
-`GITHUB` – По этому ключу располагается access токен GitHub. Его можно получить [здесь](https://github.com/settings/tokens); Токен должен иметь права `read:org, repo`.  
-`GITHUB_USERNAME` – Имя пользователя в GitHub. Можно найти в адресной строке или под ником GitHub на вашей странице.  
-`DESCRIPTION` – Описание виджета. Будет добавлено ключу `description` в json.  
-`WAKATIME_GLOBAL`, `WAKATIME_LANGS` – Статистика WakaTime. Можно получить [тут](https://wakatime.com/share/embed). Сгенерируйте типы чартов `Coding Activity` и `Languages` соответственно в формате JSON и вставьте их в соответствующие ключи в конфиге (исключая `https://wakatime.com/share`).
+- `GITHUB` – По этому ключу располагается access токен GitHub. Его можно получить [здесь](https://github.com/settings/tokens); Токен должен иметь права `read:org, repo`.  
+- `GITHUB_USERNAME` – Имя пользователя в GitHub. Можно найти в адресной строке или под ником GitHub на вашей странице.  
+- `DESCRIPTION` – Описание виджета. Будет добавлено ключу `description` в json.  
+- `WAKATIME_GLOBAL`, `WAKATIME_LANGS` – Статистика WakaTime. Можно получить [тут](https://wakatime.com/share/embed). Сгенерируйте типы чартов `Coding Activity` и `Languages` соответственно в формате JSON и вставьте их в соответствующие ключи в конфиге (исключая `https://wakatime.com/share`).
 
-`WEATHER_API`, `WEATHER_QUERY` – URL и запрос для API погоды. Используется проект [weather.andcool.ru](https://weather.andcool.ru)  
-`ACTIVITY_API`, `ACTIVITY_ID` – URL и ID для API активности. Используется проект [activity.andcool.ru](https://github.com/Andcool-Systems/Andcool-Activity)
+- `WEATHER_API`, `WEATHER_QUERY` – URL и запрос для API погоды. Используется проект [weather.andcool.ru](https://weather.andcool.ru)  
+- `ACTIVITY_API`, `ACTIVITY_ID` – URL и ID для API активности. Используется проект [activity.andcool.ru](https://github.com/Andcool-Systems/Andcool-Activity)
 
-`DATETIME_TIMEZONE` – Часовой пояс в формате JavaScript Date.
+- `DATETIME_TIMEZONE` – Часовой пояс в формате JavaScript Date.
 
 ## Быстрый старт
 Для начала работы клонируйте этот репозиторий, создайте `.env` файл с конфигурацией и запустите Docker контейнер.
