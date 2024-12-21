@@ -76,9 +76,9 @@ export class WidgetService {
             json = {
                 name: github_data.data.user?.name ?? 'n/a',
                 description: process.env.DESCRIPTION,
-                followers: github_data.data.user?.followers?.totalCount,
-                total_stars: github_data.data.user?.repositories?.totalCount,
                 github: {
+                    followers: github_data.data.user?.followers?.totalCount,
+                    total_stars: github_data.data.user?.repositories?.totalCount,
                     top_repos: top_repos,
                     streak: streak ? {
                         current: streak.streak,
