@@ -61,7 +61,7 @@ export class WidgetService {
                 this.apiService.getActivity(process.env.ACTIVITY_API, process.env.ACTIVITY_ID)
             ]);
 
-            const top_repos = github_data.data.user?.repositories?.nodes?.slice(0, 3)?.reduce((acc, value) => {
+            const top_repos = github_data.data.user?.repositories?.nodes?.reduce((acc, value) => {
                 const el = { [value.name]: value.stargazerCount };
                 acc = { ...acc, ...el };
                 return acc;
@@ -74,16 +74,16 @@ export class WidgetService {
             }, {});
 
             json = {
-                name: github_data.data.user?.name ?? 'n/a',
+                name: github_data.data.user?.name ?? null,
                 description: process.env.DESCRIPTION,
                 github: {
-                    followers: github_data.data.user?.followers?.totalCount,
-                    total_stars: github_data.data.user?.repositories?.totalCount,
-                    top_repos: top_repos,
+                    followers: github_data.data.user?.followers?.totalCount ?? null,
+                    total_stars: github_data.data.user?.repositories?.totalCount ?? null,
+                    top_repos: top_repos ?? null,
                     streak: streak ? {
                         current: streak.streak,
                         longest: streak.longest
-                    } : undefined,
+                    } : null,
                 },
                 wakatime: {
                     all_time: wakatime_global?.data?.grand_total?.human_readable_total_including_other_language,
@@ -92,7 +92,7 @@ export class WidgetService {
                 weather: weather ? {
                     temperature: weather.temp,
                     condition: weather.condition
-                } : undefined,
+                } : null,
                 datetime: {
                     time: this.getTime(),
                     tz: process.env.DATETIME_TIMEZONE,
@@ -102,7 +102,7 @@ export class WidgetService {
                     file: activity.activities[0].file ?? 'Idling',
                     workplace: activity.activities[0].workplace ?? 'No workplace',
                     duration: this.getTimeDiff(new Date(activity.activities[0].start_time))
-                } : undefined,
+                } : null,
                 created_by: "AndcoolSystems"
             }
         } catch (e) {
