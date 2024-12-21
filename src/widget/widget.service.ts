@@ -78,11 +78,13 @@ export class WidgetService {
                 description: process.env.DESCRIPTION,
                 followers: github_data.data.user?.followers?.totalCount,
                 total_stars: github_data.data.user?.repositories?.totalCount,
-                top_repos: top_repos,
-                github_streak: streak ? {
-                    current_streak: streak.streak,
-                    longest_streak: streak.longest
-                } : undefined,
+                github: {
+                    top_repos: top_repos,
+                    streak: streak ? {
+                        current: streak.streak,
+                        longest: streak.longest
+                    } : undefined,
+                },
                 wakatime: {
                     all_time: wakatime_global?.data?.grand_total?.human_readable_total_including_other_language,
                     top_langs: top_langs
