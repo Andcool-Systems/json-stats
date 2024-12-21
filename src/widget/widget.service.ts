@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { APIService } from 'src/apis/apis.service';
-import { ObjectStructureInfo, ParserService } from 'src/json_parser/parser.service';
+import { colors } from 'src/config';
+import { ObjectStructureInfo } from 'src/json_parser/parser.service';
 
 
 @Injectable()
 export class WidgetService {
-    constructor(private readonly parserService: ParserService,
+    constructor(
         private readonly apiService: APIService,
     ) { }
 
@@ -66,7 +67,7 @@ export class WidgetService {
                 return acc;
             }, {});
 
-            const top_langs = wakatime_last.data?.slice(0, 3)?.reduce((acc, value) => {
+            const top_langs = wakatime_last?.data?.slice(0, 3)?.reduce((acc, value) => {
                 const el = { [value.name.toLowerCase().replaceAll('+', 'p')]: value.text };
                 acc = { ...acc, ...el };
                 return acc;
@@ -75,21 +76,21 @@ export class WidgetService {
             json = {
                 name: github_data.data.user?.name ?? 'n/a',
                 description: process.env.DESCRIPTION,
-                followers: github_data.data.user?.followers?.totalCount ?? 'n/a',
-                total_stars: github_data.data.user?.repositories?.totalCount ?? 'n/a',
-                top_repos: top_repos ?? 'n/a',
+                followers: github_data.data.user?.followers?.totalCount,
+                total_stars: github_data.data.user?.repositories?.totalCount,
+                top_repos: top_repos,
                 github_streak: streak ? {
                     current_streak: streak.streak,
                     longest_streak: streak.longest
-                } : 'n/a',
+                } : undefined,
                 wakatime: {
-                    all_time: wakatime_global.data.grand_total.human_readable_total_including_other_language ?? 'n/a',
-                    top_langs: top_langs ?? 'n/a'
+                    all_time: wakatime_global?.data?.grand_total?.human_readable_total_including_other_language,
+                    top_langs: top_langs
                 },
                 weather: weather ? {
                     temperature: weather.temp,
                     condition: weather.condition
-                } : 'n/a',
+                } : undefined,
                 datetime: {
                     time: this.getTime(),
                     tz: process.env.DATETIME_TIMEZONE,
@@ -109,22 +110,13 @@ export class WidgetService {
                 message: (e.message ?? "Unknown error. See server console.").slice(0, 60) + (!!e.message && e.message.length > 60 ? '...' : '')
             }
         }
-
-        const indents = this.parserService.analyzeObjectStructureFlat(json);
-        return {
-            main: this.parserService.parse(json, 30),
-            indents: this.generateIndentLines(indents, 30)
-        };
-    }
-
-    async generateUser(obj: any) {
-        return this.parserService.parse(obj, 30);
+        return json;
     }
 
     generate_indexes(count: number) {
         const array = [];
         for (let index = 1; index <= count; index++) {
-            array.push(`<tspan x="${index < 10 ? '9' : '0'}" dy="${index === 1 ? '0' : '19'}">${index}</tspan>`);
+            array.push(`<tspan x="${index < 10 ? '9' : '0'}" dy="${index === 1 ? '0' : '19'}" fill="${colors.line_index}">${index}</tspan>`);
         }
 
         return array.join('\n');
@@ -134,7 +126,7 @@ export class WidgetService {
         const array = [];
         for (const indent of indents) {
             array.push(
-                `<rect fill="#404040" x="${indent.depth * indent_width}" ` +
+                `<rect fill="${colors.indent_lines}" x="${indent.depth * indent_width}" ` +
                 `y="${indent.startLine * 19}" width="1" height="${((indent.endLine - indent.startLine) - 1) * 19}" />`
             );
         }

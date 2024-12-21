@@ -17,7 +17,7 @@ export class APIService {
             'https://api.github.com/graphql',
             {
                 query: "query GetUserDetails($username: String!) { user(login: $username)" +
-                    "{ name login followers { totalCount } repositories(first: 10, orderBy: {field: STARGAZERS, direction: DESC})" +
+                    "{ name login followers { totalCount } repositories(first: 3, orderBy: {field: STARGAZERS, direction: DESC})" +
                     "{ nodes { name stargazerCount } totalCount } } } }",
                 variables: {
                     username: username

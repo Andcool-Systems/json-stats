@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
+import { brackets_colors, colors, typeColors, typeQuotes } from 'src/config';
 
 type AnyObject = Record<string, any>;
-const brackets_colors = ['#ffd700', '#da70d6', '#179fff'];
 
 export type ObjectStructureInfo = {
     key: string;
@@ -20,18 +20,20 @@ export class ParserService {
         const currentIndent = indent * depth;
         const nextIndent = indent * (depth + 1);
 
-        if (typeof obj !== "object" || obj === null) {
-            const quotes = typeof obj === 'number' ? '' : '"';
-            const color = typeof obj === 'number' ? '#b5cea8' : '#ce9178';
+        if (typeof obj !== "object" || obj === null || obj === undefined) {
+            const quotes = typeQuotes(typeof obj);
+            const color = typeColors(typeof obj);
             return `<tspan style="fill: ${color};">${quotes}${obj}${quotes}</tspan>`;
         }
 
         const entries = Object.entries(obj)
             .map(([key, value], index, array) => {
                 const formattedValue = this.parse(value, indent, depth + 1);
-                const comma = index < array.length - 1 ? "," : "";
+                const comma = index < array.length - 1 ? ',' : '';
 
-                return `<tspan x="${nextIndent}" dy="19"><tspan class="key">"${key}"</tspan>: ${formattedValue}${comma}</tspan>`;
+                return `<tspan x="${nextIndent}" dy="19">` +
+                    `<tspan style="fill: ${colors.keys};">"${key}"</tspan>: ${formattedValue}${comma}` +
+                    `</tspan>`;
             })
             .join(`\n`);
 
@@ -56,8 +58,8 @@ export class ParserService {
         );
     }
 
-    analyzeObjectStructureFlat(
-        obj: any,
+    parseObjectStructure(
+        obj: AnyObject,
         lineIndex: { current: number } = { current: 2 },
         depth: number = 0
     ): ObjectStructureInfo[] {
@@ -73,7 +75,7 @@ export class ParserService {
 
             if (typeof obj[key] === 'object' && obj[key] !== null) {
                 result.push({ key, startLine, endLine: 0, depth });
-                const children = this.analyzeObjectStructureFlat(obj[key], lineIndex, depth + 1);
+                const children = this.parseObjectStructure(obj[key], lineIndex, depth + 1);
                 result.push(...children);
                 const endLine = lineIndex.current++;
                 result.find(item => item.key === key && item.startLine === startLine)!.endLine = endLine;
