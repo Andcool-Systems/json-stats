@@ -12,6 +12,19 @@ export type ObjectStructureInfo = {
 
 @Injectable()
 export class ParserService {
+    normalizeValues = (obj: AnyObject) => {
+        const type = typeof obj;
+        switch (type) {
+            case 'function':
+                return '&lt;function&gt;';
+            case 'undefined':
+                return null;
+            default:
+                return obj;
+        }
+    }
+
+
     parse(
         obj: AnyObject,
         indent: number = 2,
@@ -21,9 +34,9 @@ export class ParserService {
         const nextIndent = indent * (depth + 1);
 
         if (typeof obj !== "object" || obj === null || obj === undefined) {
-            const quotes = config.typeQuotes(typeof obj);
-            const color = config.typeColor(typeof obj);
-            const value = typeof obj !== 'function' ? obj : '&lt;function&gt;';
+            const value = this.normalizeValues(obj);
+            const quotes = config.typeQuotes(typeof value);
+            const color = config.typeColor(typeof value);
             return `<tspan style="fill: ${color};">${quotes}${value}${quotes}</tspan>`;
         }
 

@@ -7,7 +7,7 @@ services:
         networks:
             - nginx
         restart: unless-stopped
-        command: npm run start
+        command: npm run start:prod
 
 networks:
     nginx:

@@ -61,33 +61,27 @@ export class WidgetService {
                 this.apiService.getActivity(process.env.ACTIVITY_API, process.env.ACTIVITY_ID)
             ]);
 
-            const top_repos = github_data.data.user?.repositories?.nodes?.slice(0, 3)?.reduce((acc, value) => {
-                const el = { [value.name]: value.stargazerCount };
-                acc = { ...acc, ...el };
-                return acc;
-            }, {});
+            const top_repos = github_data?.data?.user?.repositories?.nodes?.slice(0, 3)
+                ?.reduce((acc, value) => ({ ...acc, [value.name]: value.stargazerCount }), {});
 
-            const top_langs = wakatime_last?.data?.slice(0, 3)?.reduce((acc, value) => {
-                const el = { [value.name.toLowerCase().replaceAll('+', 'p')]: value.text };
-                acc = { ...acc, ...el };
-                return acc;
-            }, {});
+            const top_langs = wakatime_last?.data?.slice(0, 3)
+                ?.reduce((acc, value) => ({ ...acc, [value.name.toLowerCase().replaceAll('+', 'p')]: value.text }), {});
 
             json = {
-                name: github_data.data.user?.name ?? null,
+                name: github_data?.data?.user?.name,
                 description: process.env.DESCRIPTION,
                 github: {
-                    followers: github_data.data.user?.followers?.totalCount ?? null,
-                    total_stars: github_data?.total_stars ?? null,
-                    top_repos: top_repos ?? null,
+                    followers: github_data?.data?.user?.followers?.totalCount,
+                    total_stars: github_data?.total_stars,
+                    top_repos: top_repos,
                     streak: streak ? {
                         current: streak.streak,
                         longest: streak.longest
                     } : null,
                 },
                 wakatime: {
-                    all_time: wakatime_global?.data?.grand_total?.human_readable_total_including_other_language ?? null,
-                    top_langs: top_langs ?? null
+                    all_time: wakatime_global?.data?.grand_total?.human_readable_total_including_other_language,
+                    top_langs: top_langs
                 },
                 weather: weather ? {
                     temperature: weather.temp,
@@ -106,7 +100,7 @@ export class WidgetService {
                 created_by: "AndcoolSystems"
             }
         } catch (e) {
-            console.error(e)
+            console.error(e);
             json = {
                 status: 'error',
                 message: (e.message ?? "Unknown error. See server console.").slice(0, 60) + (!!e.message && e.message.length > 60 ? '...' : '')
@@ -115,24 +109,17 @@ export class WidgetService {
         return json;
     }
 
-    generate_indexes(count: number) {
-        const array = [];
-        for (let index = 1; index <= count; index++) {
-            array.push(`<tspan x="${index < 10 ? '9' : '0'}" dy="${index === 1 ? '0' : '19'}" fill="${config.colors.line_index}">${index}</tspan>`);
-        }
+    generate_indexes = (count: number): string =>
+        Array.from({ length: count }).map((_, index) =>
+            `<tspan x="${index < 9 ? '9' : '0'}" dy="${index === 0 ? '0' : '19'}" fill="${config.colors.line_index}">${index + 1}</tspan>`
+        ).join('\n');
 
-        return array.join('\n');
-    }
-
-    generateIndentLines(indents: ObjectStructureInfo[], indent_width: number) {
-        const array = [];
-        for (const indent of indents) {
-            array.push(
-                `<rect fill="${config.colors.indent_lines}" x="${indent.depth * indent_width}" ` +
-                `y="${indent.startLine * 19}" width="1" height="${((indent.endLine - indent.startLine) - 1) * 19}" />`
-            );
-        }
-
-        return array.join('\n');
-    }
+    generateIndentLines = (
+        indents: ObjectStructureInfo[],
+        indent_width: number
+    ): string =>
+        indents.map(indent =>
+            `<rect fill="${config.colors.indent_lines}" x="${indent.depth * indent_width}" ` +
+            `y="${indent.startLine * 19}" width="1" height="${((indent.endLine - indent.startLine) - 1) * 19}" />`
+        ).join('\n');
 }
