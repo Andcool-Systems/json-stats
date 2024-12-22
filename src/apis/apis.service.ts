@@ -38,32 +38,44 @@ export class APIService {
         return data;
     }
 
-
-    async getGithubStreak(username: string): Promise<{ streak: number; longest: number; } | null> {
-        const cache = await this.cacheManager.get<string>(`streak:${username}`);
+    async getGithubUserRegistration(username: string): Promise<UserReg | null> {
+        const cache = await this.cacheManager.get<string>(`user_reg:${username}`);
 
         if (cache) return JSON.parse(cache);
-
-        const date = new Date();
-        const timezoneOffset = date.getTimezoneOffset();
-        const now = date.getTime() - timezoneOffset * 60000;
-
-        const nowISO = new Date(now).toISOString();
-
-        const from = new Date(now);
-        from.setFullYear(from.getFullYear() - 1);
-        const fromISO = from.toISOString();
 
         const response = await axios.post(
             'https://api.github.com/graphql',
             {
-                query: "query GetUserContributions($username: String!, $from: DateTime!, $to: DateTime!)" +
-                    "{ user(login: $username) { contributionsCollection(from: $from, to: $to)" +
+                query: "query GetUserCreatedAt($username: String!) { user(login: $username) { createdAt } }",
+                variables: {
+                    username: username
+                }
+            },
+            {
+                headers: { Authorization: `Bearer ${process.env.GITHUB}` },
+                validateStatus: () => true
+            }
+        );
+
+        if (response.status !== 200) return null;
+
+        const data: UserReg = response.data;
+
+        await this.cacheManager.set(`user_reg:${username}`, JSON.stringify(data), 1000 * 60 * 60);
+        return data;
+    }
+
+    async getGithubStreakYear(username: string, from: string, to: string) {
+        const response = await axios.post(
+            'https://api.github.com/graphql',
+            {
+                query: `query GetUserContributions($username: String!, $from: DateTime!${!!to ? ", $to: DateTime!" : ""})` +
+                    `{ user(login: $username) { contributionsCollection(from: $from${!!to ? ", to: $to" : ""})` +
                     "{ contributionCalendar { weeks { contributionDays { date contributionCount } } } } } }",
                 variables: {
                     username: username,
-                    from: fromISO,
-                    to: nowISO
+                    from: from,
+                    to: to
                 }
             },
             {
@@ -72,18 +84,49 @@ export class APIService {
             }
         );
         if (response.status !== 200 || !response.data.data.user) return null;
+        const data: GithubStreak = response.data;
 
-        const data = response.data as GithubStreak;
-        const days = data.data.user.contributionsCollection.contributionCalendar.weeks.flatMap(week =>
+        return data.data.user.contributionsCollection.contributionCalendar.weeks.flatMap(week =>
             week.contributionDays.map(val => val.contributionCount)
         );
+    }
+
+
+    async getGithubStreak(username: string): Promise<{ streak: number; longest: number; total_contributions: number; } | null> {
+        const cache = await this.cacheManager.get<string>(`streak:${username}`);
+
+        if (cache) return JSON.parse(cache);
+
+        const date = new Date();
+        const timezoneOffset = date.getTimezoneOffset();
+        const now = date.getTime() - timezoneOffset * 60000;
+        const nowISO = new Date(now).toISOString();
+
+        const currentYearStart = `${date.getFullYear()}-01-01T00:00:00Z`;
+
+        let days = await this.getGithubStreakYear(username, currentYearStart, nowISO);
+        if (!days) return null;
+
+        const regTime = new Date((await this.getGithubUserRegistration(username)).data.user.createdAt);
+
+        for (let year = date.getFullYear() - 1; year >= regTime.getFullYear(); year--) {
+            try {
+                const days_last = await this.getGithubStreakYear(username, `${year}-01-01T00:00:00Z`, undefined);
+                days = [...days_last, ...days];
+            } catch (e) {
+                console.error(e);
+                break;
+            }
+        }
 
         let streak_start = -1;
         let streak_end = -1;
         let longest_streak = 0;
+        let total_contributions = 0;
 
         for (let i = 0; i < days.length; i++) {
             const day = days[i];
+            total_contributions += day;
 
             if (day !== 0) {
                 if (streak_start === -1) {
@@ -102,10 +145,11 @@ export class APIService {
         const streak_days = streak_end - streak_start;
         const result = {
             streak: streak_days,
-            longest: longest_streak
+            longest: longest_streak,
+            total_contributions
         }
 
-        await this.cacheManager.set(`streak:${username}`, JSON.stringify(result), 1000 * 60 * 60);
+        await this.cacheManager.set(`streak:${username}`, JSON.stringify(result), 1000 * 60 * 60 * 3);
         return result;
     }
 

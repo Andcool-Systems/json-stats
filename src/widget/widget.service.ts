@@ -76,7 +76,8 @@ export class WidgetService {
                     top_repos: top_repos,
                     streak: streak ? {
                         current: streak.streak,
-                        longest: streak.longest
+                        longest: streak.longest,
+                        total_contributions: streak.total_contributions
                     } : null,
                 },
                 wakatime: {

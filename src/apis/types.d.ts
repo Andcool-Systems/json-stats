@@ -103,3 +103,12 @@ interface ActivityResponse {
         start_time: Date
     }[]
 }
+
+
+interface UserReg {
+    data: {
+        user: {
+            createdAt: Date
+        }
+    }
+}
