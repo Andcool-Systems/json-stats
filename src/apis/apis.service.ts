@@ -61,7 +61,7 @@ export class APIService {
 
         const data: UserReg = response.data;
 
-        await this.cacheManager.set(`user_reg:${username}`, JSON.stringify(data), 1000 * 60 * 60);
+        await this.cacheManager.set(`user_reg:${username}`, JSON.stringify(data), 1000 * 60 * 60 * 1000);
         return data;
     }
 
