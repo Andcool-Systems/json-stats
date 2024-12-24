@@ -93,7 +93,8 @@ export class WidgetService {
                     tz: process.env.DATETIME_TIMEZONE,
                     date: this.getDate(),
                 },
-                activity: activity && activity.activities.length !== 0 ? {
+                current_activity: activity && activity.activities.length !== 0 ? {
+                    editor: activity.activities[0].editor,
                     file: activity.activities[0].file ?? 'Idling',
                     workplace: activity.activities[0].workplace ?? 'No workplace',
                     duration: this.getTimeDiff(new Date(activity.activities[0].start_time))
