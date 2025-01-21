@@ -43,4 +43,9 @@ export class WidgetController {
             main_color: config.colors.main_text
         };
     }
+
+    @Get('/json')
+    async json() {
+        return await this.widgetService.generate();
+    }
 }
