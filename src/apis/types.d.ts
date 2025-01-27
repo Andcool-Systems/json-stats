@@ -9,6 +9,9 @@ interface GithubRepos {
             repositories: {
                 nodes: {
                     name: string,
+                    owner: {
+                        login: string
+                    },
                     stargazerCount: number
 
                 }[]

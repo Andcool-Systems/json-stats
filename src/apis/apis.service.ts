@@ -18,7 +18,7 @@ export class APIService {
             {
                 query: "query GetUserDetails($username: String!) { user(login: $username)" +
                     "{ name login followers { totalCount } repositories(first: 100, orderBy: {field: STARGAZERS, direction: DESC})" +
-                    "{ nodes { name stargazerCount } } } } }",
+                    "{ nodes { name owner { login } stargazerCount } } } } }",
                 variables: {
                     username: username
                 }

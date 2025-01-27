@@ -20,12 +20,16 @@ const config: ConfigType = {
     typeColor: (type: TypeofTypes): string => {
         switch (type) {
             case 'bigint':
-            case 'number': return '#b5cea8';
+            case 'number':
+                return '#b5cea8';
             case 'object':
             case 'undefined':
-            case 'boolean': return '#569cd6';
-            case 'function': return '#dcdcaa';
-            default: return '#ce9178';
+            case 'boolean':
+                return '#569cd6';
+            case 'function':
+                return '#dcdcaa';
+            default:
+                return '#ce9178';
         }
     },
     /**

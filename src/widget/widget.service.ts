@@ -62,7 +62,13 @@ export class WidgetService {
             ]);
 
             const top_repos = github_data?.data?.user?.repositories?.nodes?.slice(0, 3)
-                ?.reduce((acc, value) => ({ ...acc, [value.name]: value.stargazerCount }), {});
+                ?.reduce((acc, value) => {
+                    const name = github_data.data.user.login !== value.owner.login ?
+                        `${value.owner.login}/${value.name}`
+                        :
+                        value.name;
+                    return { ...acc, [name]: value.stargazerCount }
+                }, {});
 
             const top_langs = wakatime_last?.data?.slice(0, 3)
                 ?.reduce((acc, value) => ({ ...acc, [value.name.toLowerCase().replaceAll('+', 'p')]: value.text }), {});
