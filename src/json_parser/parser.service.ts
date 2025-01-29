@@ -40,19 +40,33 @@ export class ParserService {
             return `<tspan style="fill: ${color};">${quotes}${value}${quotes}</tspan>`;
         }
 
-        const entries = Object.entries(obj)
-            .map(([key, value], index, array) => {
+        let entries = '';
+        if (Array.isArray(obj)) {
+            entries = obj.map((value, index) => {
                 const formattedValue = this.parse(value, indent, depth + 1);
-                const comma = index < array.length - 1 ? ',' : '';
+                const comma = index < obj.length - 1 ? ',' : '';
 
                 return (
                     `<tspan x="${nextIndent}" dy="19">` +
-                    `<tspan style="fill: ${config.colors.keys};">"${key}"</tspan>: ${formattedValue}${comma}` +
+                    `${formattedValue}${comma}` +
                     `</tspan>`
                 );
             })
-            .join(`\n`);
+                .join(`\n`);
+        } else {
+            entries = Object.entries(obj)
+                .map(([key, value], index, array) => {
+                    const formattedValue = this.parse(value, indent, depth + 1);
+                    const comma = index < array.length - 1 ? ',' : '';
 
+                    return (
+                        `<tspan x="${nextIndent}" dy="19">` +
+                        `<tspan style="fill: ${config.colors.keys};">"${key}"</tspan>: ${formattedValue}${comma}` +
+                        `</tspan>`
+                    );
+                })
+                .join(`\n`);
+        }
         const bracket_color = config.bracketsColors(depth);
 
         if (currentIndent === 0) {
@@ -63,10 +77,11 @@ export class ParserService {
             );
         }
 
+        const brackets = Array.isArray(obj) ? '[]' : '{}';
         return (
-            `<tspan style="fill: ${bracket_color};">{</tspan></tspan>\n` +
+            `<tspan style="fill: ${bracket_color};">${brackets[0]}</tspan></tspan>\n` +
             `${entries}\n` +
-            `<tspan x="${currentIndent}" dy="19"><tspan style="fill: ${bracket_color};">}</tspan>`
+            `<tspan x="${currentIndent}" dy="19"><tspan style="fill: ${bracket_color};">${brackets[1]}</tspan>`
         );
     }
 
