@@ -111,7 +111,7 @@ export class WidgetService {
             console.error(e);
             let message = "Unknown error. See server console.";
             if (e.message) {
-                message = e.message.slice(0, 60) + (!!e.message && e.message.length > 60 ? '...' : '');
+                message = e.message.length > 60 ? e.message.slice(0, 60) + '...' : e.message;
             }
             json = {
                 status: 'error',
