@@ -22,14 +22,12 @@ export class WidgetController {
         const content = this.parserService.parse(json, config.indent * 7.5);
 
         const indents = this.parserService.parseObjectStructure(json);
-
         const lines_count = content.split('\n').length;
-        const indexes = this.widgetService.generate_indexes(lines_count);
 
         res.header('Content-Type', 'image/svg+xml');
         return {
             json: content,
-            indexes: indexes,
+            indexes: this.widgetService.generateIndexes(lines_count),
             indents: this.widgetService.generateIndentLines(indents, config.indent * 7.5),
             height: 52 + (lines_count * 19),
             height_: 60 + (lines_count * 19),

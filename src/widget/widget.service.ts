@@ -121,17 +121,19 @@ export class WidgetService {
         return json;
     }
 
-    generate_indexes = (count: number): string =>
-        Array.from({ length: count }).map((_, index) =>
+    generateIndexes(count: number): string {
+        return Array.from({ length: count }).map((_, index) =>
             `<tspan x="${index < 9 ? '9' : '0'}" dy="${index === 0 ? '0' : '19'}" fill="${config.colors.line_index}">${index + 1}</tspan>`
         ).join('\n');
+    }
 
-    generateIndentLines = (
+    generateIndentLines(
         indents: ObjectStructureInfo[],
         indent_width: number
-    ): string =>
-        indents.map(indent =>
+    ): string {
+        return indents.map(indent =>
             `<rect fill="${config.colors.indent_lines}" x="${indent.depth * indent_width}" ` +
             `y="${indent.startLine * 19}" width="1" height="${((indent.endLine - indent.startLine) - 1) * 19}" />`
         ).join('\n');
+    }
 }
