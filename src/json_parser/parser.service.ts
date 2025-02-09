@@ -24,7 +24,6 @@ export class ParserService {
         }
     }
 
-
     parse(
         obj: AnyObject,
         indent: number = 2,

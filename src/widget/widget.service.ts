@@ -109,9 +109,13 @@ export class WidgetService {
             }
         } catch (e) {
             console.error(e);
+            let message = "Unknown error. See server console.";
+            if (e.message) {
+                message = e.message.slice(0, 60) + (!!e.message && e.message.length > 60 ? '...' : '');
+            }
             json = {
                 status: 'error',
-                message: (e.message ?? "Unknown error. See server console.").slice(0, 60) + (!!e.message && e.message.length > 60 ? '...' : '')
+                message
             }
         }
         return json;
