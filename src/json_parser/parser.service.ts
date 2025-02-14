@@ -22,17 +22,13 @@ export class ParserService {
             default:
                 return obj;
         }
-    }
+    };
 
-    parse(
-        obj: AnyObject,
-        indent: number = 2,
-        depth: number = 0
-    ): string {
+    parse(obj: AnyObject, indent: number = 2, depth: number = 0): string {
         const currentIndent = indent * depth;
         const nextIndent = indent * (depth + 1);
 
-        if (typeof obj !== "object" || obj === null || obj === undefined) {
+        if (typeof obj !== 'object' || obj === null || obj === undefined) {
             const value = this.normalizeValues(obj);
             const quotes = config.typeQuotes(typeof value);
             const color = config.typeColor(typeof value);
@@ -41,16 +37,17 @@ export class ParserService {
 
         let entries = '';
         if (Array.isArray(obj)) {
-            entries = obj.map((value, index) => {
-                const formattedValue = this.parse(value, indent, depth + 1);
-                const comma = index < obj.length - 1 ? ',' : '';
+            entries = obj
+                .map((value, index) => {
+                    const formattedValue = this.parse(value, indent, depth + 1);
+                    const comma = index < obj.length - 1 ? ',' : '';
 
-                return (
-                    `<tspan x="${nextIndent}" dy="19">` +
-                    `${formattedValue}${comma}` +
-                    `</tspan>`
-                );
-            })
+                    return (
+                        `<tspan x="${nextIndent}" dy="19">` +
+                        `${formattedValue}${comma}` +
+                        `</tspan>`
+                    );
+                })
                 .join(`\n`);
         } else {
             entries = Object.entries(obj)
@@ -93,17 +90,20 @@ export class ParserService {
 
         const result: ObjectStructureInfo[] = [];
 
-        Object.entries(obj)
-            .forEach(([key, value]) => {
-                const startLine = lineIndex.current++;
+        Object.entries(obj).forEach(([key, value]) => {
+            const startLine = lineIndex.current++;
 
-                if (typeof value === 'object' && value !== null) {
-                    result.push({ key, startLine, endLine: 0, depth });
-                    result.push(...this.parseObjectStructure(value, lineIndex, depth + 1));
-                    const endLinde = lineIndex.current++;
-                    result.find(item => item.key === key && item.startLine === startLine)!.endLine = endLinde;
-                }
-            });
+            if (typeof value === 'object' && value !== null) {
+                result.push({ key, startLine, endLine: 0, depth });
+                result.push(
+                    ...this.parseObjectStructure(value, lineIndex, depth + 1)
+                );
+                const endLinde = lineIndex.current++;
+                result.find(
+                    (item) => item.key === key && item.startLine === startLine
+                )!.endLine = endLinde;
+            }
+        });
         return result;
     }
 }

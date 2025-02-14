@@ -7,8 +7,8 @@ import { APIService } from './apis/apis.service';
 import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [CacheModule.register(), ConfigModule.forRoot()],
-  controllers: [WidgetController],
-  providers: [ParserService, WidgetService, APIService],
+    imports: [CacheModule.register(), ConfigModule.forRoot()],
+    controllers: [WidgetController],
+    providers: [ParserService, WidgetService, APIService]
 })
-export class AppModule { }
+export class AppModule {}

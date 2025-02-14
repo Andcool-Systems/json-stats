@@ -3,23 +3,25 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Cache } from 'cache-manager';
 import axios from 'axios';
 
-
 @Injectable()
 export class APIService {
-    constructor(@Inject(CACHE_MANAGER) private cacheManager: Cache) { }
+    constructor(@Inject(CACHE_MANAGER) private cacheManager: Cache) {}
 
     async getGithubRepos(username: string): Promise<GithubRepos | null> {
         try {
-            const cache = await this.cacheManager.get<string>(`repos:${username}`);
+            const cache = await this.cacheManager.get<string>(
+                `repos:${username}`
+            );
 
             if (cache) return JSON.parse(cache);
 
             const response = await axios.post(
                 'https://api.github.com/graphql',
                 {
-                    query: "query GetUserDetails($username: String!) { user(login: $username)" +
-                        "{ name login followers { totalCount } repositories(first: 100, orderBy: {field: STARGAZERS, direction: DESC})" +
-                        "{ nodes { name owner { login } stargazerCount } } } } }",
+                    query:
+                        'query GetUserDetails($username: String!) { user(login: $username)' +
+                        '{ name login followers { totalCount } repositories(first: 100, orderBy: {field: STARGAZERS, direction: DESC}, privacy: PUBLIC)' +
+                        '{ nodes { name owner { login } stargazerCount } } } } }',
                     variables: {
                         username: username
                     }
@@ -33,20 +35,33 @@ export class APIService {
             if (response.status !== 200) return null;
 
             const data: GithubRepos = response.data;
-            data.total_stars = data?.data?.user?.repositories?.nodes?.reduce((acc, node) => acc + node.stargazerCount, 0);
 
-            await this.cacheManager.set(`repos:${username}`, JSON.stringify(data), 1000 * 60 * 60);
+            data.total_stars = data?.data?.user?.repositories?.nodes?.reduce(
+                (acc, node) => acc + node.stargazerCount,
+                0
+            );
+
+            await this.cacheManager.set(
+                `repos:${username}`,
+                JSON.stringify(data),
+                1000 * 60 * 60
+            );
             return data;
         } catch (e) {
-            console.error(e)
-            return null
+            console.error(e);
+            return null;
         }
     }
 
-
-    async getGithubStreak(username: string): Promise<{ streak: number; longest: number; total_contributions: number; } | null> {
+    async getGithubStreak(username: string): Promise<{
+        streak: number;
+        longest: number;
+        total_contributions: number;
+    } | null> {
         try {
-            const cache = await this.cacheManager.get<string>(`streak:${username}`);
+            const cache = await this.cacheManager.get<string>(
+                `streak:${username}`
+            );
 
             if (cache) return JSON.parse(cache);
 
@@ -63,9 +78,10 @@ export class APIService {
             const response = await axios.post(
                 'https://api.github.com/graphql',
                 {
-                    query: "query GetUserContributions($username: String!, $from: DateTime!, $to: DateTime!)" +
-                        "{ user(login: $username) { contributionsCollection(from: $from, to: $to)" +
-                        "{ contributionCalendar { weeks { contributionDays { date contributionCount } } } } } }",
+                    query:
+                        'query GetUserContributions($username: String!, $from: DateTime!, $to: DateTime!)' +
+                        '{ user(login: $username) { contributionsCollection(from: $from, to: $to)' +
+                        '{ contributionCalendar { weeks { contributionDays { date contributionCount } } } } } }',
                     variables: {
                         username: username,
                         from: fromISO,
@@ -77,12 +93,17 @@ export class APIService {
                     validateStatus: () => true
                 }
             );
-            if (response.status !== 200 || !response.data.data.user) return null;
+            if (response.status !== 200 || !response.data.data.user)
+                return null;
 
             const data = response.data as GithubStreak;
-            const days = data.data.user.contributionsCollection.contributionCalendar.weeks.flatMap(week =>
-                week.contributionDays.map(val => val.contributionCount)
-            );
+            const days =
+                data.data.user.contributionsCollection.contributionCalendar.weeks.flatMap(
+                    (week) =>
+                        week.contributionDays.map(
+                            (val) => val.contributionCount
+                        )
+                );
 
             let streak_start = -1;
             let streak_end = -1;
@@ -99,7 +120,10 @@ export class APIService {
                         streak_end = i;
                     }
                     streak_end = i;
-                    longest_streak = Math.max(longest_streak, streak_end - streak_start);
+                    longest_streak = Math.max(
+                        longest_streak,
+                        streak_end - streak_start
+                    );
                 } else {
                     if (i !== days.length - 1) {
                         streak_start = -1;
@@ -112,31 +136,44 @@ export class APIService {
                 streak: streak_days,
                 longest: longest_streak,
                 total_contributions
-            }
+            };
 
-            await this.cacheManager.set(`streak:${username}`, JSON.stringify(result), 1000 * 60 * 60);
+            await this.cacheManager.set(
+                `streak:${username}`,
+                JSON.stringify(result),
+                1000 * 60 * 60
+            );
             return result;
         } catch (e) {
-            console.error(e)
+            console.error(e);
             return null;
         }
     }
 
     async getWakatimeGlobal(path: string): Promise<WakatimeGlobal | null> {
         try {
-            const cache = await this.cacheManager.get<string>(`waka_global:${path}`);
+            const cache = await this.cacheManager.get<string>(
+                `waka_global:${path}`
+            );
 
             if (cache) {
                 return JSON.parse(cache);
             }
 
-            const response = await axios.get(`https://wakatime.com/share${path}`, { validateStatus: () => true });
+            const response = await axios.get(
+                `https://wakatime.com/share${path}`,
+                { validateStatus: () => true }
+            );
 
             if (response.status !== 200) {
                 return null;
             }
 
-            await this.cacheManager.set(`waka_global:${path}`, JSON.stringify(response.data), 1000 * 60 * 60);
+            await this.cacheManager.set(
+                `waka_global:${path}`,
+                JSON.stringify(response.data),
+                1000 * 60 * 60
+            );
             return response.data;
         } catch (e) {
             console.error(e);
@@ -144,21 +181,32 @@ export class APIService {
         }
     }
 
-    async getWakatimeLanguages(path: string): Promise<WakatimeLanguages | null> {
+    async getWakatimeLanguages(
+        path: string
+    ): Promise<WakatimeLanguages | null> {
         try {
-            const cache = await this.cacheManager.get<string>(`waka_langs:${path}`);
+            const cache = await this.cacheManager.get<string>(
+                `waka_langs:${path}`
+            );
 
             if (cache) {
                 return JSON.parse(cache);
             }
 
-            const response = await axios.get(`https://wakatime.com/share${path}`, { validateStatus: () => true });
+            const response = await axios.get(
+                `https://wakatime.com/share${path}`,
+                { validateStatus: () => true }
+            );
 
             if (response.status !== 200) {
                 return null;
             }
 
-            await this.cacheManager.set(`waka_langs:${path}`, JSON.stringify(response.data), 1000 * 60 * 60);
+            await this.cacheManager.set(
+                `waka_langs:${path}`,
+                JSON.stringify(response.data),
+                1000 * 60 * 60
+            );
             return response.data;
         } catch (e) {
             console.error(e);
@@ -166,21 +214,32 @@ export class APIService {
         }
     }
 
-    async getWeather(api: string, query: string): Promise<WeatherResponse | null> {
+    async getWeather(
+        api: string,
+        query: string
+    ): Promise<WeatherResponse | null> {
         try {
-            const cache = await this.cacheManager.get<string>(`weather:${query}`);
+            const cache = await this.cacheManager.get<string>(
+                `weather:${query}`
+            );
 
             if (cache) {
                 return JSON.parse(cache);
             }
 
-            const response = await axios.get(`${api}${query}`, { validateStatus: () => true });
+            const response = await axios.get(`${api}${query}`, {
+                validateStatus: () => true
+            });
 
             if (response.status !== 200) {
                 return null;
             }
 
-            await this.cacheManager.set(`weather:${query}`, JSON.stringify(response.data), 1000 * 60 * 30);
+            await this.cacheManager.set(
+                `weather:${query}`,
+                JSON.stringify(response.data),
+                1000 * 60 * 30
+            );
             return response.data;
         } catch (e) {
             console.error(e);
@@ -188,7 +247,10 @@ export class APIService {
         }
     }
 
-    async getActivity(api: string, id: string): Promise<ActivityResponse | null> {
+    async getActivity(
+        api: string,
+        id: string
+    ): Promise<ActivityResponse | null> {
         try {
             const cache = await this.cacheManager.get<string>(`activity:${id}`);
 
@@ -196,13 +258,19 @@ export class APIService {
                 return JSON.parse(cache);
             }
 
-            const response = await axios.get(`${api}${id}`, { validateStatus: () => true });
+            const response = await axios.get(`${api}${id}`, {
+                validateStatus: () => true
+            });
 
             if (response.status !== 200) {
                 return null;
             }
 
-            await this.cacheManager.set(`activity:${id}`, JSON.stringify(response.data), 1000 * 60);
+            await this.cacheManager.set(
+                `activity:${id}`,
+                JSON.stringify(response.data),
+                1000 * 60
+            );
             return response.data;
         } catch (e) {
             console.log(e);
