@@ -69,6 +69,7 @@ export class WidgetService {
             ]);
 
             const top_repos = github_data?.data?.user?.repositories?.nodes
+                ?.filter((node) => !node.isPrivate)
                 ?.slice(0, 3)
                 ?.reduce((acc, value) => {
                     const name =

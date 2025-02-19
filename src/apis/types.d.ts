@@ -13,6 +13,7 @@ interface GithubRepos {
                         login: string;
                     };
                     stargazerCount: number;
+                    isPrivate: boolean;
                 }[];
             };
         };
