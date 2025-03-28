@@ -64,20 +64,11 @@ export class ParserService {
                 .join(`\n`);
         }
         const bracket_color = config.bracketsColors(depth);
-
-        if (currentIndent === 0) {
-            return (
-                `<tspan x="0" dy="0" style="fill: ${bracket_color};">{</tspan>\n` +
-                `${entries}\n` +
-                `<tspan x="0" dy="19" style="fill: ${bracket_color};">}</tspan>`
-            );
-        }
-
         const brackets = Array.isArray(obj) ? '[]' : '{}';
         return (
-            `<tspan style="fill: ${bracket_color};">${brackets[0]}</tspan></tspan>\n` +
+            `<tspan style="fill: ${bracket_color};">${brackets[0]}</tspan>\n` +
             `${entries}\n` +
-            `<tspan x="${currentIndent}" dy="19"><tspan style="fill: ${bracket_color};">${brackets[1]}</tspan>`
+            `<tspan x="${currentIndent}" dy="19" style="fill: ${bracket_color};">${brackets[1]}</tspan>`
         );
     }
 
