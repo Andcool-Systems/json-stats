@@ -2,6 +2,19 @@ import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Inject, Injectable } from '@nestjs/common';
 import { Cache } from 'cache-manager';
 import axios from 'axios';
+import http from 'http';
+import https from 'https';
+
+const agentOptions = {
+    keepAlive: true,
+    timeout: 5000
+};
+
+const instance = axios.create({
+    timeout: 5000,
+    httpAgent: new http.Agent(agentOptions),
+    httpsAgent: new https.Agent(agentOptions)
+});
 
 @Injectable()
 export class APIService {
@@ -15,7 +28,7 @@ export class APIService {
 
             if (cache) return JSON.parse(cache);
 
-            const response = await axios.post(
+            const response = await instance.post(
                 'https://api.github.com/graphql',
                 {
                     query:
@@ -74,7 +87,7 @@ export class APIService {
             from.setFullYear(from.getFullYear() - 1);
             const fromISO = from.toISOString();
 
-            const response = await axios.post(
+            const response = await instance.post(
                 'https://api.github.com/graphql',
                 {
                     query:
@@ -159,7 +172,7 @@ export class APIService {
                 return JSON.parse(cache);
             }
 
-            const response = await axios.get(
+            const response = await instance.get(
                 `https://wakatime.com/share${path}`,
                 { validateStatus: () => true }
             );
@@ -192,7 +205,7 @@ export class APIService {
                 return JSON.parse(cache);
             }
 
-            const response = await axios.get(
+            const response = await instance.get(
                 `https://wakatime.com/share${path}`,
                 { validateStatus: () => true }
             );
@@ -226,7 +239,7 @@ export class APIService {
                 return JSON.parse(cache);
             }
 
-            const response = await axios.get(`${api}${query}`, {
+            const response = await instance.get(`${api}${query}`, {
                 validateStatus: () => true
             });
 
@@ -257,7 +270,7 @@ export class APIService {
                 return JSON.parse(cache);
             }
 
-            const response = await axios.get(`${api}${id}`, {
+            const response = await instance.get(`${api}${id}`, {
                 validateStatus: () => true
             });
 
