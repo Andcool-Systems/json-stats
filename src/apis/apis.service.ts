@@ -173,7 +173,7 @@ export class APIService {
             }
 
             const response = await instance.get(
-                `https://wakatime.com/share${path}`,
+                `${process.env.WAKATIME_URL}${path}`,
                 { validateStatus: () => true }
             );
 
@@ -206,7 +206,7 @@ export class APIService {
             }
 
             const response = await instance.get(
-                `https://wakatime.com/share${path}`,
+                `${process.env.WAKATIME_URL}${path}`,
                 { validateStatus: () => true }
             );
 
