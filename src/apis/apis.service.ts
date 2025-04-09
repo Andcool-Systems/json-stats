@@ -34,7 +34,7 @@ export class APIService {
                     query:
                         'query GetUserDetails($username: String!) { user(login: $username)' +
                         '{ name login followers { totalCount } repositories(first: 100, orderBy: {field: STARGAZERS, direction: DESC})' +
-                        '{ nodes { name owner { login } isPrivate stargazerCount } } } } }',
+                        '{ nodes { name owner { login } isPrivate stargazerCount } } } }',
                     variables: {
                         username: username
                     }
@@ -45,7 +45,10 @@ export class APIService {
                 }
             );
 
-            if (response.status !== 200) return null;
+            if (response.status !== 200) {
+                console.error(response.data);
+                return null;
+            }
             const data: GithubRepos = response.data;
 
             data.total_stars = data?.data?.user?.repositories?.nodes?.reduce(
