@@ -58,10 +58,7 @@ export class WidgetService {
                 this.apiService.getWakatimeLanguages(
                     process.env.WAKATIME_LANGS
                 ),
-                this.apiService.getWeather(
-                    process.env.WEATHER_API,
-                    process.env.WEATHER_QUERY
-                ),
+                this.apiService.getWeather(process.env.WEATHER_QUERY),
                 this.apiService.getActivity(
                     process.env.ACTIVITY_API,
                     process.env.ACTIVITY_ID

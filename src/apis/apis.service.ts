@@ -229,10 +229,7 @@ export class APIService {
         }
     }
 
-    async getWeather(
-        api: string,
-        query: string
-    ): Promise<WeatherResponse | null> {
+    async getWeather(query: string): Promise<WeatherResponse | null> {
         try {
             const cache = await this.cacheManager.get<string>(
                 `weather:${query}`
@@ -242,20 +239,30 @@ export class APIService {
                 return JSON.parse(cache);
             }
 
-            const response = await instance.get(`${api}${query}`, {
-                validateStatus: () => true
-            });
+            const capitalize = (str: string) =>
+                String(str).charAt(0).toUpperCase() + String(str).slice(1);
 
-            if (response.status !== 200) {
-                return null;
-            }
+            const response = await axios.get(
+                `https://api.openweathermap.org/data/2.5/weather` +
+                    `?lat=${process.env.WEATHER_LAT}` +
+                    `&lon=${process.env.WEATHER_LON}` +
+                    `&appid=${process.env.WEATHER_TOKEN}` +
+                    `&units=metric`
+            );
+
+            if (response.status !== 200) return null;
+
+            const data = {
+                temp: response.data.main.temp,
+                condition: capitalize(response.data.weather[0].description)
+            };
 
             await this.cacheManager.set(
                 `weather:${query}`,
-                JSON.stringify(response.data),
+                JSON.stringify(data),
                 1000 * 60 * 30
             );
-            return response.data;
+            return data;
         } catch (e) {
             console.error(e);
             return null;

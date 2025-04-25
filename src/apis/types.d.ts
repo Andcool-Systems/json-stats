@@ -82,16 +82,7 @@ interface WakatimeLanguages {
 
 interface WeatherResponse {
     temp: number;
-    feels_like: number;
-    pressure: number;
-    visibility: number;
-    humidity: number;
-    wind: {
-        speed: number;
-        deg: number;
-    };
     condition: string;
-    icon: string;
 }
 
 interface ActivityResponse {
