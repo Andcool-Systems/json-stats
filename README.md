@@ -20,7 +20,7 @@ WAKATIME_URL="https://wakatime.com/share"
 WAKATIME_GLOBAL="/@AndcoolSystems/c20041f4-a965-47c3-ac36-7234e622a980.json" // WakaTime Global stats
 WAKATIME_LANGS="/@AndcoolSystems/eaa20c39-4e68-49d3-8760-93e93fbf1ff5.json" // WakaTime Langs stats
 
-WEATHER_TOKEN="61d202e168925f843260a7f646f65118"  // OpenWeatherMap Token
+WEATHER_TOKEN="<token>"  // OpenWeatherMap Token
 WEATHER_LAT="xxx"  // Location Latitude
 WEATHER_LON="xxx"  // Location Longitude
 
