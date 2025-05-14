@@ -27,5 +27,6 @@ jobs:
                     git stash
                     git merge '@{u}'
                     docker-compose build
+                    docker-compose down --volumes --remove-orphans
                     docker-compose up -d
                   EOF
