@@ -26,6 +26,6 @@ jobs:
                     git fetch
                     git stash
                     git merge '@{u}'
-                    docker compose build
-                    docker compose up -d
+                    docker-compose build
+                    docker-compose up -d
                   EOF
