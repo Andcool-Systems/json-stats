@@ -17,17 +17,17 @@ GITHUB_USERNAME="<github_username>"
 DESCRIPTION="Your description"
 
 WAKATIME_URL="https://wakatime.com/share"
-WAKATIME_GLOBAL="/@AndcoolSystems/c20041f4-a965-47c3-ac36-7234e622a980.json" // WakaTime Global stats
-WAKATIME_LANGS="/@AndcoolSystems/eaa20c39-4e68-49d3-8760-93e93fbf1ff5.json" // WakaTime Langs stats
+WAKATIME_GLOBAL="/@AndcoolSystems/c20041f4-a965-47c3-ac36-7234e622a980.json" # WakaTime Global stats
+WAKATIME_LANGS="/@AndcoolSystems/eaa20c39-4e68-49d3-8760-93e93fbf1ff5.json" # WakaTime Langs stats
 
 WEATHER_TOKEN="<token>"  // OpenWeatherMap Token
-WEATHER_LAT="xxx"  // Location Latitude
-WEATHER_LON="xxx"  // Location Longitude
+WEATHER_LAT="xxx"  # Location Latitude
+WEATHER_LON="xxx"  # Location Longitude
 
-ACTIVITY_API="https://activity.andcool.ru/" // Path for activity API
-ACTIVITY_ID="t9mdtk" // ID of activity
+ACTIVITY_API="https://activity.andcool.ru/" # Path for activity API
+ACTIVITY_ID="t9mdtk" # ID of activity
 
-DATETIME_TIMEZONE="Etc/GMT-3" // Yours timezone
+DATETIME_TIMEZONE="Etc/GMT-3" # Yours timezone
 ```
 
 - `GITHUB` – По этому ключу располагается access токен GitHub. Его можно получить [здесь](https://github.com/settings/tokens); Токен должен иметь права `read:org, repo`.  
