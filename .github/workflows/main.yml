@@ -22,7 +22,7 @@ jobs:
               run: |
                   sshpass -e ssh -o StrictHostKeyChecking=no root@${{ secrets.SERVER_IP }} << 'EOF'
                     set -e
-                    cd /home/andcoolsystems/json_stats
+                    cd /home/andcoolsystems/json-stats
                     git fetch
                     git stash
                     git merge '@{u}'
