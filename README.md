@@ -15,6 +15,7 @@ GITHUB="<github_token>"
 GITHUB_USERNAME="<github_username>"
 
 DESCRIPTION="Your description"
+BIRTHDAY="2000-01-01" // Birthday date year/month/day
 
 WAKATIME_URL="https://wakatime.com/share"
 WAKATIME_GLOBAL="/@AndcoolSystems/c20041f4-a965-47c3-ac36-7234e622a980.json" // WakaTime Global stats

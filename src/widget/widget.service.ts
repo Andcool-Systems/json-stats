@@ -84,9 +84,16 @@ export class WidgetService {
                 {}
             );
 
+            const startDate = new Date(process.env.BIRTHDAY);
+            const endDate = new Date();
+            const diffMs = endDate.getTime() - startDate.getTime();
+            const diffDays = diffMs / (1000 * 60 * 60 * 24);
+            const daysInYear = 365.2425;
+
             json = {
                 name: github_data?.data?.user?.name,
                 description: process.env.DESCRIPTION,
+                age: diffDays / daysInYear,
                 github: {
                     followers: github_data?.data?.user?.followers?.totalCount,
                     total_stars: github_data?.total_stars,
