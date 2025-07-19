@@ -1,15 +1,11 @@
 import { ConfigType, TypeofTypes } from 'src/config.types';
 
 const config: ConfigType = {
-    indent: 4, // Number of spaces
+    indent: 2, // Number of spaces
     colors: {
         main_text: '#ffffff', // Comma, colon color
-        background: '#1e1e1e', // Main background color
-        header: '#252526', // Color of header
-        icon_color: '#ffd700', // Color of `{}` icon in filename
-        indent_lines: '#404040', // Color of indent lines
-        line_index: '#6e7681', // Color of indexes of lines
-        keys: '#9cdcfe' // Color of JSON keys
+        background: '#151b23', // Main background color
+        keys: '#7ee787' // Color of JSON keys
     },
     /**
      * Get the color associated with a JavaScript data type.
@@ -21,15 +17,15 @@ const config: ConfigType = {
         switch (type) {
             case 'bigint':
             case 'number':
-                return '#b5cea8';
+                return '#79c0ff';
             case 'object':
             case 'undefined':
             case 'boolean':
-                return '#569cd6';
+                return '#79c0ff';
             case 'function':
                 return '#dcdcaa';
             default:
-                return '#ce9178';
+                return '#a5d6ff';
         }
     },
     /**
@@ -48,9 +44,9 @@ const config: ConfigType = {
      * @param {number} depth - Current object depth.
      * @returns {string} Hex color code corresponding to the provided depth.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     bracketsColors: (depth: number): string => {
-        const brackets_colors = ['#ffd700', '#da70d6', '#179fff'];
-        return brackets_colors[depth % brackets_colors.length];
+        return '#ffffff';
     }
 };
 

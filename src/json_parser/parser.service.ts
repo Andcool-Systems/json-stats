@@ -71,30 +71,4 @@ export class ParserService {
             `<tspan x="${currentIndent}" dy="19" style="fill: ${bracket_color};">${brackets[1]}</tspan>`
         );
     }
-
-    parseObjectStructure(
-        obj: AnyObject,
-        lineIndex: { current: number } = { current: 2 },
-        depth: number = 0
-    ): ObjectStructureInfo[] {
-        if (typeof obj !== 'object' || obj === null) return [];
-
-        const result: ObjectStructureInfo[] = [];
-
-        Object.entries(obj).forEach(([key, value]) => {
-            const startLine = lineIndex.current++;
-
-            if (typeof value === 'object' && value !== null) {
-                result.push({ key, startLine, endLine: 0, depth });
-                result.push(
-                    ...this.parseObjectStructure(value, lineIndex, depth + 1)
-                );
-                const endLinde = lineIndex.current++;
-                result.find(
-                    (item) => item.key === key && item.startLine === startLine
-                )!.endLine = endLinde;
-            }
-        });
-        return result;
-    }
 }

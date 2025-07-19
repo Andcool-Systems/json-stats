@@ -1,7 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { APIService } from 'src/apis/apis.service';
-import config from 'src/config';
-import { ObjectStructureInfo } from 'src/json_parser/parser.service';
 
 @Injectable()
 export class WidgetService {
@@ -153,27 +151,5 @@ export class WidgetService {
             };
         }
         return json;
-    }
-
-    generateIndexes(count: number): string {
-        return Array.from({ length: count })
-            .map(
-                (_, index) =>
-                    `<tspan x="${index < 9 ? '9' : '0'}" dy="${index === 0 ? '0' : '19'}" fill="${config.colors.line_index}">${index + 1}</tspan>`
-            )
-            .join('\n');
-    }
-
-    generateIndentLines(
-        indents: ObjectStructureInfo[],
-        indent_width: number
-    ): string {
-        return indents
-            .map(
-                (indent) =>
-                    `<rect fill="${config.colors.indent_lines}" x="${indent.depth * indent_width}" ` +
-                    `y="${indent.startLine * 19}" width="1" height="${(indent.endLine - indent.startLine - 1) * 19}" />`
-            )
-            .join('\n');
     }
 }

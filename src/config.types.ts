@@ -13,10 +13,6 @@ export type ConfigType = {
     colors: {
         main_text: string;
         background: string;
-        header: string;
-        icon_color: string;
-        indent_lines: string;
-        line_index: string;
         keys: string;
     };
     typeColor: (type: TypeofTypes) => string;

@@ -4,35 +4,9 @@
             font-weight: normal;
             transform: translateX(5px);
         }
-
-        .filename {
-            transform: translateX(10px);
-        }
-
-        .indexes {
-            transform: translateX(10px);
-        }
-
-        .main_text {
-            transform: translateX(38px);
-        }
     </style>
-    <rect width="800" height="{{ height_ }}" style="fill: {{background_color}};" />
-    <rect width="673" height="40" x="127" style="fill: {{header_color}};" />
-    <rect width="1" height="{{ height_main_line }}" x="40" y="65" fill="{{indent_color}}" />
-
-    <text y="60" font-family="Consolas, monospace" class="indexes" fill="{{main_color}}">
-        {{{indexes}}}
-    </text>
-    <text y="25" class="filename" font-family="Segoe WPC, Segoe UI, sans-serif" fill="{{main_color}}">
-        <tspan fill="{{icon_color}}" font-family="Consolas, monospace">{}</tspan> info.json
-        <tspan font-family="Consolas, monospace" style="font-size: .8rem;">&#8197;&#x2715;</tspan>
-    </text>
-    <text y="60" font-family="Consolas, monospace" class="main_text" fill="{{main_color}}">
+    <rect width="800" height="{{ height_ }}" style="fill: {{background_color}};" rx="5" />
+    <text y="20" font-family="Consolas, monospace" fill="{{main_color}}">
         {{{json}}}
     </text>
-
-    <g style="transform: translate({{indent_x}}px, 45px);">
-        {{{indents}}}
-    </g>
 </svg>
