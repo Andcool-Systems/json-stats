@@ -77,87 +77,114 @@ export class APIService {
             const cache = await this.cacheManager.get<string>(
                 `streak:${username}`
             );
-
             if (cache) return JSON.parse(cache);
 
-            const date = new Date();
-            const timezoneOffset = date.getTimezoneOffset();
-            const now = date.getTime() - timezoneOffset * 60000;
+            const today = new Date();
+            const timezoneOffset = today.getTimezoneOffset();
+            today.setMinutes(today.getMinutes() - timezoneOffset);
 
-            const nowISO = new Date(now).toISOString();
+            const headers = { Authorization: `Bearer ${process.env.GITHUB}` };
+            const allDays: { date: string; count: number }[] = [];
 
-            const from = new Date(now);
-            from.setFullYear(from.getFullYear() - 1);
-            const fromISO = from.toISOString();
+            for (let i = 0; i < 5; i++) {
+                const from = new Date(today);
+                from.setFullYear(today.getFullYear() - i - 1);
+                const to = new Date(today);
+                to.setFullYear(today.getFullYear() - i);
 
-            const response = await instance.post(
-                'https://api.github.com/graphql',
-                {
-                    query:
-                        'query GetUserContributions($username: String!, $from: DateTime!, $to: DateTime!)' +
-                        '{ user(login: $username) { contributionsCollection(from: $from, to: $to)' +
-                        '{ contributionCalendar { weeks { contributionDays { date contributionCount } } } } } }',
-                    variables: {
-                        username: username,
-                        from: fromISO,
-                        to: nowISO
+                const response = await instance.post(
+                    'https://api.github.com/graphql',
+                    {
+                        query: `
+                        query GetUserContributions($username: String!, $from: DateTime!, $to: DateTime!) {
+                            user(login: $username) {
+                                contributionsCollection(from: $from, to: $to) {
+                                    contributionCalendar {
+                                        weeks {
+                                            contributionDays {
+                                                date
+                                                contributionCount
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    `,
+                        variables: {
+                            username,
+                            from: from.toISOString(),
+                            to: to.toISOString()
+                        }
+                    },
+                    {
+                        headers,
+                        validateStatus: () => true
                     }
-                },
-                {
-                    headers: { Authorization: `Bearer ${process.env.GITHUB}` },
-                    validateStatus: () => true
-                }
-            );
-            if (response.status !== 200 || !response.data.data.user)
-                return null;
-
-            const data = response.data as GithubStreak;
-            const days =
-                data.data.user.contributionsCollection.contributionCalendar.weeks.flatMap(
-                    (week) =>
-                        week.contributionDays.map(
-                            (val) => val.contributionCount
-                        )
                 );
 
-            let streak_start = -1;
-            let streak_end = -1;
-            let longest_streak = 0;
-            let total_contributions = 0;
+                if (
+                    response.status !== 200 ||
+                    !response.data.data?.user?.contributionsCollection
+                ) {
+                    return null;
+                }
 
-            for (let i = 0; i < days.length; i++) {
-                const day = days[i];
-                total_contributions += day;
+                const weeks =
+                    response.data.data.user.contributionsCollection
+                        .contributionCalendar.weeks;
 
-                if (day !== 0) {
-                    if (streak_start === -1) {
-                        streak_start = i;
-                        streak_end = i;
-                    }
-                    streak_end = i;
-                    longest_streak = Math.max(
-                        longest_streak,
-                        streak_end - streak_start
-                    );
+                const days = weeks.flatMap((week: any) =>
+                    week.contributionDays.map((day: any) => ({
+                        date: day.date,
+                        count: day.contributionCount
+                    }))
+                );
+
+                allDays.push(...days);
+            }
+
+            allDays.sort(
+                (a, b) =>
+                    new Date(a.date).getTime() - new Date(b.date).getTime()
+            );
+
+            let currentStreak = 0;
+            let longestStreak = 0;
+            let totalContributions = 0;
+
+            for (const day of allDays) {
+                totalContributions += day.count;
+
+                if (day.count > 0) {
+                    currentStreak++;
+                    longestStreak = Math.max(longestStreak, currentStreak);
                 } else {
-                    if (i !== days.length - 1) {
-                        streak_start = -1;
-                        streak_end = -1;
-                    }
+                    currentStreak = 0;
                 }
             }
-            const streak_days = streak_end - streak_start;
+
+            let streak = 0;
+            for (let i = allDays.length - 1; i >= 0; i--) {
+                if (allDays[i].count > 0) {
+                    streak++;
+                } else {
+                    break;
+                }
+            }
+
             const result = {
-                streak: streak_days,
-                longest: longest_streak,
-                total_contributions
+                streak,
+                longest: longestStreak,
+                total_contributions: totalContributions
             };
 
             await this.cacheManager.set(
                 `streak:${username}`,
                 JSON.stringify(result),
-                1000 * 60 * 60
+                1000 * 60 * 60 * 12
             );
+
             return result;
         } catch (e) {
             console.error(e);

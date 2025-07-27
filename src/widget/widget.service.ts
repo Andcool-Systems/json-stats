@@ -98,7 +98,7 @@ export class WidgetService {
                     followers: github_data?.data?.user?.followers?.totalCount,
                     total_stars: github_data?.total_stars,
                     top_repos: top_repos,
-                    streak_last_year: streak
+                    streak: streak
                         ? {
                               current: streak.streak,
                               longest: streak.longest,
