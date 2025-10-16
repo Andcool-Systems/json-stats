@@ -174,7 +174,7 @@ export class APIService {
             }
 
             const result = {
-                streak,
+                streak: streak + 1,
                 longest: longestStreak,
                 total_contributions: totalContributions
             };
