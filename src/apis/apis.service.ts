@@ -165,7 +165,7 @@ export class APIService {
             }
 
             let streak = 0;
-            for (let i = allDays.length - 1; i >= 0; i--) {
+            for (let i = allDays.length - 2; i >= 0; i--) {
                 if (allDays[i].count > 0) {
                     streak++;
                 } else {

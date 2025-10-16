@@ -30,8 +30,9 @@ export class WidgetController {
                 indents,
                 config.indent * 7.5
             ),
-            height: 52 + lines_count * 19,
-            height_: 60 + lines_count * 19,
+            name: process.env.GITHUB_USERNAME,
+            height: 80 + lines_count * 19,
+            height_: 80 + lines_count * 19,
             height_main_line: (lines_count - 2) * 19,
             indent_x: 40 + config.indent * 7.5,
 
@@ -39,7 +40,8 @@ export class WidgetController {
             header_color: config.colors.header,
             icon_color: config.colors.icon_color,
             indent_color: config.colors.indent_lines,
-            main_color: config.colors.main_text
+            main_color: config.colors.main_text,
+            line_index_color: config.colors.line_index
         };
     }
 
